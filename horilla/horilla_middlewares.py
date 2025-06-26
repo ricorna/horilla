@@ -5,13 +5,17 @@ This module is used to register horilla's middlewares without affecting the hori
 """
 
 import threading
+import os
 
 from django.http import HttpResponseNotAllowed
 from django.shortcuts import render
 
 from horilla.settings import MIDDLEWARE
 
-MIDDLEWARE.append("base.middleware.CompanyMiddleware")
+# Allow disabling heavy CompanyMiddleware via env var
+if os.getenv("DISABLE_COMPANY_MW", "0") != "1":
+    MIDDLEWARE.append("base.middleware.CompanyMiddleware")
+
 MIDDLEWARE.append("horilla.horilla_middlewares.MethodNotAllowedMiddleware")
 MIDDLEWARE.append("horilla.horilla_middlewares.ThreadLocalMiddleware")
 MIDDLEWARE.append("accessibility.middlewares.AccessibilityMiddleware")

@@ -8,7 +8,22 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_URL: "postgres://postgres:postgres@db:5432/horilla"
-    command: sh ./entrypoint.sh
+      DISABLE_COMPANY_MW: "1"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    command: >
+      gunicorn horilla.wsgi:application
+      --bind 0.0.0.0:8000
+      --worker-class gthread
+      --threads 4
+      --workers 3
+      --timeout 300
+      --keep-alive 5
+      --max-requests 500
+      --max-requests-jitter 50
     volumes:
       - ./horilla:/app/horilla
       - ./media:/app/media

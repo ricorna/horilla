@@ -1,8 +1,21 @@
 #!/bin/bash
+set -e
 
-echo "Waiting for database to be ready..."
-python3 manage.py makemigrations
-python3 manage.py migrate
-python3 manage.py collectstatic --noinput
-python3 manage.py createhorillauser --first_name admin --last_name admin --username admin --password admin --email admin@example.com --phone 1234567890
-gunicorn --bind 0.0.0.0:8000 horilla.wsgi:application
+# Wait for the database to become available
+python manage.py migrate --check || python manage.py migrate --noinput
+
+# Create default superuser if it doesn't exist
+python manage.py shell <<'PY'
+from django.contrib.auth import get_user_model
+User = get_user_model()
+if not User.objects.filter(username="admin").exists():
+    User.objects.create_superuser("admin", "admin@example.com", "admin")
+PY
+
+# Collect static files (idempotent)
+python manage.py collectstatic --noinput
+
+exec gunicorn horilla.wsgi:application \
+    --bind 0.0.0.0:8000 \
+    --workers ${WORKERS:-1} \
+    --timeout ${TIMEOUT:-300}
