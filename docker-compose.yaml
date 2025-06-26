@@ -9,7 +9,8 @@ services:
     environment:
       DATABASE_URL: "postgres://postgres:postgres@db:5432/horilla"
       DISABLE_COMPANY_MW: "1"
-      ALLOWED_HOSTS: "localhost,127.0.0.1,horillademo.swyftbridge.io"
+      ALLOWED_HOSTS: "localhost,127.0.0.1,horillademo.swyftbridge.io,eks4goc8s84844s4w0wgc48k.contextra.io"
+      CSRF_TRUSTED_ORIGINS: "https://horillademo.swyftbridge.io,https://eks4goc8s84844s4w0wgc48k.contextra.io"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
       interval: 30s
