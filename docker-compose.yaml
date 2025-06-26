@@ -9,21 +9,13 @@ services:
     environment:
       DATABASE_URL: "postgres://postgres:postgres@db:5432/horilla"
       DISABLE_COMPANY_MW: "1"
+      ALLOWED_HOSTS: "localhost,127.0.0.1,horillademo.swyftbridge.io"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
       interval: 30s
       timeout: 5s
       retries: 5
-    command: >
-      gunicorn horilla.wsgi:application
-      --bind 0.0.0.0:8000
-      --worker-class gthread
-      --threads 4
-      --workers 3
-      --timeout 300
-      --keep-alive 5
-      --max-requests 500
-      --max-requests-jitter 50
+    entrypoint: ["/app/entrypoint.sh"]
     volumes:
       - media:/app/media
     depends_on:

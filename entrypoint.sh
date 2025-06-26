@@ -15,7 +15,9 @@ PY
 # Collect static files (idempotent)
 python manage.py collectstatic --noinput
 
+GUNICORN_OPTS="${GUNICORN_OPTS:-"--worker-class gthread --threads 4 --workers 3 --timeout 300 --keep-alive 5 --max-requests 500 --max-requests-jitter 50"}"
+
+# Allow overriding Gunicorn options via $GUNICORN_OPTS env var
 exec gunicorn horilla.wsgi:application \
     --bind 0.0.0.0:8000 \
-    --workers ${WORKERS:-1} \
-    --timeout ${TIMEOUT:-300}
+    $GUNICORN_OPTS
