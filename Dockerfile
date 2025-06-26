@@ -12,6 +12,9 @@ RUN chmod +x /app/entrypoint.sh
 
 RUN pip install -r requirements.txt
 
+# Install curl for container healthcheck
+RUN apt-get update && apt-get install -y curl && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 EXPOSE 8000
 
 CMD ["python3", "manage.py", "runserver"]
