@@ -241,3 +241,16 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# ---------------------------------------------------------------------------
+# Horilla add-on apps (accessibility, horilla_automations, etc.)
+# These are appended to INSTALLED_APPS inside horilla.horilla_apps so we must
+# import that module early while settings are still being processed.
+# ---------------------------------------------------------------------------
+
+# Do this last so that any INSTALLED_APPS defined above can still be modified.
+try:
+    import horilla.horilla_apps  # noqa: F401 – side-effect: extends INSTALLED_APPS
+except Exception as e:  # pragma: no cover
+    # Fallback to keep Django running even if the optional add-on registry fails
+    print(f"⚠️  Could not import horilla.horilla_apps: {e}")

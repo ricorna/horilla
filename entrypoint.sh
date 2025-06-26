@@ -1,8 +1,9 @@
 #!/bin/bash
 set -e
 
-# Wait for the database to become available
-python manage.py migrate --check || python manage.py migrate --noinput
+# Generate any missing migrations and apply them
+python manage.py makemigrations --noinput || true
+python manage.py migrate --noinput --run-syncdb
 
 # Create default superuser if it doesn't exist
 python manage.py shell <<'PY'
