@@ -10,7 +10,7 @@ python manage.py shell <<'PY'
 from django.contrib.auth import get_user_model
 User = get_user_model()
 if not User.objects.filter(username="swyftbridgeadmin").exists():
-    User.objects.create_superuser("swyftbridgeadmin", "admin@example.com", "cwd2enk7ujy_JHM!qyt")
+    User.objects.create_superuser("swyftbridgeadmin", "admin@swyftbridge.io", "cwd2enk7ujy_JHM!qyt")
 PY
 
 # Collect static files (idempotent)
